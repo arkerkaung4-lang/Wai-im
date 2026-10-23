@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find The Imposter - 100+ Words Edition</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Pyidaungsu', sans-serif;
+            background: radial-gradient(circle at center, #1a0000 0%, #0d0000 100%);
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #ffcc00;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.6);
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #ff4d4d;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 18px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.8;
+            text-align: left;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .player-select-group {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .player-select-group select {
+            background: #2a2a2a;
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
+            color: #1a0000;
+            border: none;
+            padding: 16px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 25px rgba(255, 170, 0, 0.4);
+            margin-top: 10px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .play-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 10px rgba(255, 170, 0, 0.3);
+        }
+
+        .hidden { display: none !important; }
+
+        .swipe-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+        
+        .secret-layer {
+            position: absolute;
+            width: 90%;
+            height: 260px;
+            background: linear-gradient(145deg, #1f1f1f, #121212);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            z-index: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .swipe-card {
+            position: absolute;
+            width: 90%;
+            height: 260px;
+            background-size: cover;
+            background-position: center;
+            background-color: #262626;
+            color: #fff;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            z-index: 2;
+            cursor: grab;
+            touch-action: none;
+            transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+            padding: 20px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .swipe-card:active {
+            cursor: grabbing;
+        }
+
+        .arrow-up {
+            font-size: 32px;
+            margin: 10px 0;
+            animation: bounce 1.2s infinite ease-in-out;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hint-btn {
+            background: transparent;
+            color: #ffcc00;
+            font-size: 15px;
+            padding: 14px 20px;
+            border-radius: 30px;
+            margin-top: 15px;
+            border: 2px solid #ffcc00;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.2);
+            transition: all 0.2s;
+        }
+
+        .hint-btn:active {
+            background: rgba(255, 204, 0, 0.1);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Setup Screen -->
+        <div id="setup-screen" class="fade-in">
+            <h1>🕵️‍♂️ FIND THE<br><span style="color:#ff4d4d">IMPOSTER</span></h1>
+            <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">100+ Words Edition</p>
+            <div class="info-box">
+                <div class="player-select-group">
+                    <span>👥 ကစားသမား အရေအတွက်:</span>
+                    <select id="player-count-select">
+                        <option value="3">၃ ယောက်</option>
+                        <option value="4">၄ ယောက်</option>
+                        <option value="5" selected>၅ ယောက်</option>
+                        <option value="6">၆ ယောက်</option>
+                        <option value="7">၇ ယောက်</option>
+                        <option value="8">၈ ယောက်</option>
+                        <option value="9">၉ ယောက်</option>
+                        <option value="10">၁၀ ယောက်</option>
+                    </select>
+                </div>
+                🤫 Imposter: <b>၁ ယောက်</b><br>
+                📂 အမျိုးအစား: <b>(၁၀၀+) ပုဒ်စီ ပါဝင်သည်</b>
+            </div>
+            <button class="play-btn" onclick="startGame()">▶️ စတင်မည် (PLAY)</button>
+        </div>
+
+        <!-- Pass Phone Screen -->
+        <div id="pass-screen" class="hidden fade-in">
+            <div style="font-size: 50px; margin-bottom: 10px;">📱</div>
+            <h2 id="player-turn-title">ကစားသမား (၁) သို့ ဖုန်းပေးပါ</h2>
+            <p style="color: #bbb; font-size: 13px; margin-bottom: 25px;">ဖုန်းကို အခြားသူများ မမြင်အောင် လွှဲပြောင်းပေးပါ။</p>
+            <button class="play-btn" onclick="showSwipeScreen()">👀 ကြည့်ရန် နှိပ်ပါ</button>
+        </div>
+
+        <!-- Swipe Screen -->
+        <div id="swipe-screen" class="hidden fade-in">
+            <h2 id="swipe-player-title" style="margin-bottom: 2px; color:#ffcc00;">ကစားသမား (၁)</h2>
+            <p style="font-size: 12px; color:#aaa; margin-bottom: 5px;">လျှို့ဝှက်ချက်ကို ကြည့်ရန် ကဒ်ကို အပေါ်သို့ ဆွဲတင်ပါ</p>
+            
+            <div class="swipe-container">
+                <div class="secret-layer" id="secret-layer">
+                    <div id="role-display-area"></div>
+                    <div id="role-text" style="font-size: 18px; font-weight: bold;">စကားလုံး</div>
+                </div>
+                <div class="swipe-card" id="swipe-card">
+                    <div style="font-size: 20px; font-weight: bold; margin-bottom: 5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);" id="card-name-title">Player 1</div>
+                    <div class="arrow-up">⬆️</div>
+                    <div style="font-size: 14px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); background: rgba(0,0,0,0.4); padding: 5px 12px; border-radius: 15px;">အပေါ်သို့ ဆွဲတင်ပါ</div>
+                </div>
+            </div>
+            <button onclick="nextPlayer()" id="next-btn" class="hidden play-btn" style="margin-top: 10px; font-size: 16px; padding: 14px;">⏭️ ပြီးပါပြီ (ဖုန်းလွှဲမည်)</button>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="hidden fade-in">
+            <div style="font-size: 55px; margin-bottom: 10px;">🎉</div>
+            <h1>အားလုံး ပြီးပါပြီ</h1>
+            <p style="font-size: 14px; line-height: 1.6; color: #ccc; margin-bottom: 20px;">Imposter က ဘယ်သူလဲဆိုတာ အချင်းချင်း ငြင်းခုံပြီး အားလုံး မဲခွဲလိုက်ကြပါစို့။</p>
+            <button class="hint-btn" onclick="revealImposterHint()">🎯 Imposter ဘယ်သူလဲ ဖော်ပြမည်</button>
+            <button class="play-btn" style="font-size: 16px; padding: 14px; margin-top: 12px;" onclick="resetGame()">🔄 အစကနေ ပြန်စမည်</button>
+        </div>
+    </div>
+
+    <script>
+        const categories = [
+            {
+                name: "🍜 အစားအစာနှင့် သရေစာ",
+                words: [
+                    "မုန့်ဟင်းခါး", "မန္တလေးမုန့်တီ", "ကျွဲကောသီး", "ရှောက်ချိုသီး", "လက်ဖက်ရည်", "ကော်ဖီ", "စမူဆာ", "ထမင်းဆီစိမ်", "အုန်းနို့ခေါက်ဆွဲ", "ကြက်သားဘိန်းမုန့်",
+                    "ကြာဇံချက်", "ထိုးစော်ဘဲ", "ဝက်သားတုတ်ထိုး", "မုန့်ကျားဆီ", "ထမင်းကြော်", "ကော်ရည်ခေါက်ဆွဲ", "ဘိုစားပဲကြော်", "ငါးပါးစပ်ကြော်", "မုန့်လက်ထောက်", "မုန့်လုံးရေပေါ်",
+                    "ဆနွင်းမကင်း", "ရွှေရင်အေး", "ကျောက်ကျော", "စိန်ပွင့်", "မုန့်ကျွတ်ကျွတ်", "သရက်သီးထောင်း", "ငါးကြော်ဘတ်", "တိုဟူးနွေး", "တိုဟူးကြော်", "ကောက်ညှင်းပေါင်း",
+                    "ကျောက်ဖရုံသီးယို", "မုန့်ပုတီး", "လက်ဖက်သုပ်", "ဂျင်းသုပ်", "ဂေါ်ဖီသုပ်", "ခရမ်းချဉ်သီးသုပ်", "ခေါက်ဆွဲသုပ်", "ကြာဇံသုပ်", "မန်ကျည်းစေ့ယို", "သရက်သီးသုပ်",
+                    "ကြက်ဥကြော်", "ငါးခြောက်ကြော်", "ပုစွန်ခြောက်သုပ်", "မျှစ်သုပ်", "ပဲပုတ်သုပ်", "ဝက်အူချောင်း", "ကြက်ဥပြုတ်", "ဘဲဥပြုတ်", "မုန့်ပြားတပ်", "မုန့်မွှား",
+                    "ရေခဲမုန့်", "သစ်သီးဖျော်ရည်", "ကျွဲရိုင်း", "အချိုရည်", "ဆိုဒါ", "မိုင်လို", "နို့စိမ်း", "သံပုရာရည်", "မန်ကျည်းစေ့ဖျော်ရည်", "လက်ဖက်ရည်ကြမ်း",
+                    "ကန်စွန်းရွက်ကြော်", "ကြက်သားဟင်း", "ဝက်သားဟင်း", "ငါးကြော်", "ပုစွန်ဟင်း", "ဂဏန်းဟင်း", "ဘဲသားဟင်း", "အမဲသားခြောက်စပ်", "ပဲカレー", "အာလူးဟင်း",
+                    "ပန်ကိတ်", "ဘာဂါ", "ပီဇာ", "ဟော့ဒေါ့", "ဆန်းဝှစ်", "ဖရဲချ်ဖရိုင်း", "စပါကတီ", "စတိတ်စ့်", "ဆူရှီ", "နူးဒယ်",
+                    "ချိုချဉ်", "ချော့ကလက်", "ဘီစကစ်", "ကိတ်မုန့်", "ပေါင်မုန့်", "ယိုသီး", "ထောပတ်", "ဒိန်ချဉ်", "ဒိန်ခဲ", "ပူတင်း",
+                    "ဖရဲသီး", "ပန်းသီး", "စပျစ်သီး", "နာနတ်သီး", "မာလကာသီး", "သင်္ဘောသီး", "သရက်သီး", "ငှက်ပျောသီး", "သစ်တော်သီး", "လိမ္မော်သီး", "ဒူးရင်းသီး"
+                ]
+            },
+            {
+                name: "🏛️ နေရာဒေသများ",
+                words: [
+                    "ရွှေတိဂုံဘုရား", "ကမ်းနားလမ်း", "ဈေးချို", "အင်းလျားကန်", "ဗိုလ်ချုပ်ဈေး", "ကန်တော်ကြီး", "ကျောက်ပန်းတောင်း", "ပုဂံဘုရားများ", "အင်းလေးကန်", "မန္တလေးတောင်",
+                    "စစ်ကိုင်းတောင်", "မေမြို့", "ပြင်ဦးလွင်", "တောင်ကြီး", "အင်္ဂပူ", "ပုသိမ်", "မော်လမြိုင်", "ဘားအံ", "ထားဝယ်", "မြိတ်",
+                    "ကော့သောင်း", "စစ်တွေ", "ကျောက်ဖြူ", "သံတွဲ", "ငပလီကမ်းခြေ", "ချောင်းသာကမ်းခြေ", "ကျောက်မျက်ပြတိုက်", "ဗိုလ်ချုပ်ပန်းခြံ", "ပြည်သူ့ဥယျာဉ်", "တိရစ္ဆာန်ဥယျာဉ်",
+                    "ရန်ကုန်လေဆိပ်", "မန္တလေးလေဆိပ်", "နေပြည်တော်", "ဥပ္ပါတသန္တိစေတီ", "ရေပန်းဥယျာဉ်", "အမျိုးသားပြတိုက်", "ဗဟန်းဈေး", "သီရိမင်္ဂလာဈေး", "တာမွေဈေး", "စမ်းချောင်းဈေး",
+                    "ဆေးရုံကြီး", "တက္ကသိုလ်ရိပ်သာလမ်း", "အင်းစိန်လမ်း", "ဘုရင့်နောင်လမ်း", "အောက်ကြည့်မြင်တိုင်လမ်း", "ဗဟိုလမ်း", "ပန်းဆိုးတန်း", "ကုန်သည်လမ်း", "မဟာဗန္ဓုလလမ်း", "ဆူးလေဘုရား",
+                    "ရန်ကုန်ဘူတာကြီး", "မန္တလေးဘူတာကြီး", "ညောင်ဦးလေဆိပ်", "ဟဲဟိုးလေဆိပ်", "လားရှိုး", "ကျောက်မဲ", "သီပေါ", "လားရှိုးတက္ကသိုလ်", "မိုင်းပန်", "ကျိုင်းတုံ",
+                    "တာချီလိတ်", "မောက်မယ်", "လွိုင်လင်", "ဟိုပုံး", "အနောက်ဘက်တံတား", "အင်းဝတံတား", "ရတနာပုံတံတား", "ဗထူးဘောလုံးကွင်း", "သုဝဏ္ဏကွင်း", "အောင်ဆန်းကွင်း",
+                    "မန္တလေးနန်းတော်", "ရွှေကျောင်း", "မဟာမြတ်မုနိ", "ကျောက်တော်ကြီး", "ကုသိုလ်တော်", "စန္ဒာမုနိ", "အတုမရှိကျောင်း", "သီတဂူဗုဒ္ဓတက္ကသိုလ်", "ပခုက္ကူ", "ချောက်",
+                    "ရေနံချောင်း", "မင်းဘူး", "မကွေး", "သရက်", "အောင်လံ", "တောင်တွင်းကြီး", "ဆင်ဖြူကျွန်း", "ပွင့်ဖြူ", "ငဖဲ", "မင်းဘူးမြို့",
+                    "မြိုင်", "ပုလိပ်", "တံတားဦး", "စဉ့်ကိုင်", "ကျောက်ဆည်", "မြင်းခြံ", "ဝမ်းတွင်း", "မိတ္ထီလာ", "သာစည်", "ယမေတ္တာ", "ပုပ္ပားတောင်"
+                ]
+            },
+            {
+                name: "📱 အသုံးအဆောင်နှင့် ယာဉ်များ",
+                words: [
+                    "ထဘီ", "ပုဆိုး", "သနပ်ခါး", "စက်ဘီး", "စမတ်ဖုန်း", "ထီး", "မျက်မှန်", "လက်ပတ်နာရီ", "သုံးဘီးဆိုင်ကယ်", "မော်တော်ဆိုင်ကယ်",
+                    "ကား", "ဘတ်စ်ကား", "ရထား", "သင်္ဘော", "လေယာဉ်ပျံ", "ရဟတ်ယာဉ်", "ထရပ်ကား", "ကုန်တင်ကား", "ပစ်ကပ်", "တက်စီ",
+                    "အင်္ကျီ", "ဘောင်းဘီ", "စကတ်", "ကုတ်အင်္ကျီ", "ဦးထုပ်", "ခြေအိတ်", "ဖိနပ်", "ကြိုးဖိနပ်", "ស្ဘែកဖိနပ်", "ဘွတ်ဖိနပ်",
+                    "လက်ကိုင်အိတ်", "ကျောပိုးအိတ်", "ပိုက်ဆံအိတ်", "ခါးပတ်", "ပဝါ", "လက်အိတ်", "မျက်မှန်အိမ်", "သော့တွဲ", "မီးခြစ်", "ဓာတ်မီး",
+                    "ကွန်ပျူတာ", "လက်ပ်တော့", "တက်ဘလက်", "ပရင်တာ", "မောက်စ်", "ကီးဘုတ်", "နားကြပ်", "စပီကာ", "ချာဂျာ", "ပါဝါဘဏ်",
+                    "တယ်လီဖိုး", "တီဗီ", "ရေခဲသေတ္တာ", "အဝတ်လျှော်စက်", "လေအေးပေးစက်", "ပန်ကာ", "မိုက်ခရိုဝေ့ဖ်", "ထမင်းပေါင်းအိုး", "မီးပူ", "လေမှုတ်စက်",
+                    "ဘရပ်ရှ်", "သွားတိုက်ဆေး", "ဆပ်ပြာ", "ခေါင်းလျှော်ရည်", "မျက်နှာသစ်ဆေး", "ရေမွှေး", "လက်သည်းညှပ်", "ဘီး", "သဘက်", "မှန်",
+                    "ခက်ရင်း", "ဇွန်း", "ပန်းကန်ပြား", "ပန်းကန်လုံး", "ခွက်", "ရေနွေးအိုး", "ဒယ်အိုး", "အိုး", "ဓား", "ကျောက်သင်ပုန်း",
+                    "ဘောပင်", "ခဲတံ", "ခဲဖျက်", "ပေတံ", "ကတ်ကြေး", "ကော်ဘူး", "စာအုပ်", "ဗလာစာအုပ်", "ဖိုင်တွဲ", "မှတ်စုစာအုပ်",
+                    "သံတူ", "လက်သည်းရိုက်တံတူ", "တူစကူ", "သော့", "ကတ်ကြေးထက်", "လွှ", "ကရိန်း", "ထွန်စက်", "စပါးရိတ်စက်", "ရေစုပ်စက်", "ဂစ်တာ"
+                ]
+            }
+        ];
+
+        let playerCount = 5;
+        let currentPlayer = 0;
+        let roles = [];
+        let selectedCategory = "";
+        let secretWord = "";
+        let actualImposterIndex = 0;
+
+        function triggerVibration() {
+            if (navigator.vibrate) {
+                navigator.vibrate(40);
+            }
+        }
+
+        function startGame() {
+            playerCount = parseInt(document.getElementById('player-count-select').value);
+            triggerVibration();
+            
+            let catIndex = Math.floor(Math.random() * categories.length);
+            selectedCategory = categories[catIndex].name;
+            let wordList = categories[catIndex].words;
+
+            secretWord = wordList[Math.floor(Math.random() * wordList.length)];
+
+            roles = new Array(playerCount).fill(0);
+            actualImposterIndex = Math.floor(Math.random() * playerCount);
+            roles[actualImposterIndex] = 1; 
+
+            currentPlayer = 0;
+            document.getElementById('setup-screen').classList.add('hidden');
+            showPassScreen();
+        }
+
+        function showPassScreen() {
+            if (currentPlayer >= playerCount) {
+                document.getElementById('pass-screen').classList.add('hidden');
+                document.getElementById('end-screen').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('player-turn-title').innerText = `ကစားသမား (${currentPlayer + 1}) သို့ ဖုန်းပေးပါ`;
+            document.getElementById('pass-screen').classList.remove('hidden');
+        }
+
+        function showSwipeScreen() {
+            triggerVibration();
+            document.getElementById('pass-screen').classList.add('hidden');
+            document.getElementById('swipe-player-title').innerText = `ကစားသမား (${currentPlayer + 1})`;
+            document.getElementById('card-name-title').innerText = `Player ${currentPlayer + 1}`;
+            
+            let roleTextElem = document.getElementById('role-text');
+            let roleDisplayArea = document.getElementById('role-display-area');
+
+            if (roles[currentPlayer] === 1) {
+                roleDisplayArea.innerHTML = `<div style="font-size: 42px; margin-bottom: 5px; text-shadow: 0 0 15px red;">❌</div>`;
+                roleTextElem.innerHTML = `<span style='color: #ff4d4d; font-size: 20px; letter-spacing:2px; font-weight:bold;'>IMPOSTER</span><br><span style='font-size: 13px; color: #bbb; margin-top:8px; display:block;'>💡 သဲလွန်စ အမျိုးအစား:<br><b style="color:#ffcc00">${selectedCategory}</b></span>`;
+            } else {
+                roleDisplayArea.innerHTML = `<div style="font-size: 42px; margin-bottom: 5px; text-shadow: 0 0 15px cyan;">🌟</div>`;
+                roleTextElem.innerHTML = `<span style='font-size: 12px; color: #aaa;'>(${selectedCategory})</span><br><span style='font-size: 13px; color: #ccc; margin-top:2px;'>လျှို့ဝှက်စကားလုံး</span><br><span style='color: #00ffcc; font-size: 22px; text-shadow: 0 0 10px rgba(0,255,204,0.4);'><b>${secretWord}</b></span>`;
+            }
+
+            const swipeCard = document.getElementById('swipe-card');
+            swipeCard.style.transform = 'translateY(0px)';
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('swipe-screen').classList.remove('hidden');
+        }
+
+        const swipeCard = document.getElementById('swipe-card');
+        let startY = 0;
+        let currentY = 0;
+        let isDragging = false;
+
+        swipeCard.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+            isDragging = true;
+        });
+
+        swipeCard.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            currentY = e.touches[0].clientY;
+            let diff = currentY - startY;
+            if (diff < 0) { 
+                swipeCard.style.transform = `translateY(${diff}px)`;
+                if (diff < -80) { 
+                    isDragging = false;
+                    triggerVibration();
+                    swipeCard.style.transform = `translateY(-260px)`;
+                    document.getElementById('next-btn').classList.remove('hidden');
+                }
+            }
+        });
+
+        swipeCard.addEventListener('touchend', () => {
+            isDragging = false;
+            let diff = currentY - startY;
+            if (diff >= -80) {
+                swipeCard.style.transform = `translateY(0px)`;
+            }
+        });
+
+        swipeCard.addEventListener('mousedown', (e) => {
+            startY = e.clientY;
+            isDragging = true;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            let diff = e.clientY - startY;
+            if (diff < 0) {
+                swipeCard.style.transform = `translateY(${diff}px)`;
+                if (diff < -80) {
+                    isDragging = false;
+                    triggerVibration();
+                    swipeCard.style.transform = `translateY(-260px)`;
+                    document.getElementById('next-btn').classList.remove('hidden');
+                }
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                swipeCard.style.transform = `translateY(0px)`;
+            }
+        });
+
+        function nextPlayer() {
+            triggerVibration();
+            document.getElementById('swipe-screen').classList.add('hidden');
+            currentPlayer++;
+            showPassScreen();
+        }
+
+        function revealImposterHint() {
+            triggerVibration();
+            alert(`🔍 အမှန်တကယ် Imposter ဖြစ်သူမှာ - "ကစားသမား (${actualImposterIndex + 1})" ဖြစ်ပါသည်။\n\n📂 ထွက်ရှိသော စကားလုံး: ${secretWord} (${selectedCategory})`);
+        }
+
+        function resetGame() {
+            triggerVibration();
+            document.getElementById('end-screen').classList.add('hidden');
+            document.getElementById('setup-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
